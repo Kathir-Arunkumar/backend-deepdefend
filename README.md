@@ -22,5 +22,10 @@ git clone https://github.com/your-username/backend-auth-api.git
 cd backend-auth-api
 
 
+### **3️⃣ Create a `.env` File**  
+Create a `.env` file in the project root and add your **MongoDB connection string**:
+
+```ini
+MONGO_URI=mongodb+srv://your_username:your_password@your-cluster.mongodb.net/?retryWrites=true&w=majority
 
 
