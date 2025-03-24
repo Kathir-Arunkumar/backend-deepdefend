@@ -16,13 +16,11 @@ It connects to **MongoDB Atlas** and provides RESTful APIs for **user signup, lo
 
 ## 🛠️ Setup Instructions
 
-### **1️⃣ Clone the Repository**
+### ** Clone the Repository**
 ```bash
 git clone https://github.com/your-username/backend-auth-api.git
 cd backend-auth-api
 
-### **2️⃣ Install Dependencies**
-```bash
-pip install -r requirements.txt
+
 
 
