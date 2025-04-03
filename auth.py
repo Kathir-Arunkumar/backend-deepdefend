@@ -1,21 +1,19 @@
 from fastapi import APIRouter, HTTPException
 from models import UserSignup, UserLogin
 from database import users_collection
-from passlib.context import CryptContext
+import bcrypt  # Using bcrypt directly
 
 # Create an API router for authentication
 auth_router = APIRouter()
 
-# Password Hashing Setup (bcrypt)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Function to hash passwords using bcrypt
+def hash_password(password: str) -> str:
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
-# Helper function to hash passwords
-def hash_password(password: str):
-    return pwd_context.hash(password)
-
-# Helper function to verify passwords
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+# Function to verify passwords
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 # User Signup Route
 @auth_router.post("/signup")
@@ -49,10 +47,9 @@ async def signup(user: UserSignup):
 async def login(user: UserLogin):
     # Find user in MongoDB
     db_user = await users_collection.find_one({"email": user.email})
-    
+
     # Check if user exists and password is correct
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     return {"message": "Login successful!"}
-
