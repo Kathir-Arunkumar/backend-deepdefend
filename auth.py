@@ -55,3 +55,4 @@ async def login(user: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     return {"message": "Login successful!"}
+
