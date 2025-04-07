@@ -1,6 +1,7 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends, Form
 from models import FileMetadata
 from database import files_collection
+from auth_utils import get_current_user_id
 import os
 import shutil
 
@@ -11,8 +12,12 @@ UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)  # Create directory if not exists
 
 # File Upload Endpoint
-@dashboard_router.post("/upload/")
-async def upload_file(user_id: str, file: UploadFile = File(...)):
+@dashboard_router.post("/upload")
+async def upload_file(
+    file: UploadFile = File(...),
+    visibility: str = Form(...),  # Accept 'private' or 'public' from the frontend
+    user_id: str = Depends(get_current_user_id)
+):
     try:
         # Define the file path
         file_path = os.path.join(UPLOAD_DIR, file.filename)
@@ -27,11 +32,16 @@ async def upload_file(user_id: str, file: UploadFile = File(...)):
             "file_name": file.filename,
             "file_type": file.content_type,
             "file_size": file.size,
-            "storage_path": file_path
+            "storage_path": file_path,
+            "visibility": visibility  # 'private' or 'public'
         }
         await files_collection.insert_one(file_metadata)
 
-        return {"message": "File uploaded successfully!", "file_name": file.filename}
+        return {
+            "message": "File uploaded successfully!",
+            "file_name": file.filename,
+            "visibility": visibility
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

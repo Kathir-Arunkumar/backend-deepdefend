@@ -1,7 +1,27 @@
 import hashlib
+import os
 from fastapi import APIRouter, HTTPException
 from models import UserSignup, UserLogin
 from database import users_collection
+from jose import jwt
+from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")  # Now using env variable
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY is not set in the environment!")
+
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 auth_router = APIRouter()
 
@@ -19,7 +39,6 @@ async def signup(user: UserSignup):
     if user.password != user.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
-    # Hash the password before storing
     hashed_pw = hash_password(user.password)
 
     user_data = {
@@ -39,4 +58,12 @@ async def login(user: UserLogin):
     if not db_user or db_user["password"] != hash_password(user.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    return {"message": "Login successful!"}
+    # Optional: Generate and return JWT token
+    token_data = {"sub": str(db_user["_id"]), "email": db_user["email"]}
+    access_token = create_access_token(data=token_data)
+
+    return {
+        "message": "Login successful!",
+        "access_token": access_token,
+        "token_type": "bearer"
+    }

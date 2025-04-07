@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from auth import auth_router
 from dashboard import dashboard_router
+from pyngrok import ngrok
+import uvicorn
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -16,6 +18,12 @@ app.include_router(dashboard_router, prefix="/dashboard")
 async def root():
     return {"message": "Welcome to the Login System!"}
 
+
+
+
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = 8000
+    ngrok.set_auth_token("2vEKBq30aFmJhwsUb577SZW5bkw_5DdN9KsR6ECiWVFprkVEZ")
+    ngrok_tunnel = ngrok.connect(port)
+    print(f"Public URL: {ngrok_tunnel.public_url}")
+    uvicorn.run(app, host="0.0.0.0",port=port)
