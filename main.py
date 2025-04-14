@@ -3,6 +3,12 @@ from auth import auth_router
 from dashboard import dashboard_router
 from pyngrok import ngrok
 import uvicorn
+# main.py
+from chatbot_utils import index_uploaded_files
+
+# Call this at app startup
+index_uploaded_files()
+
 
 # Initialize FastAPI app
 app = FastAPI()

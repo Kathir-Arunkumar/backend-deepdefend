@@ -15,8 +15,13 @@ class UserLogin(BaseModel):
 
 # File Metadata Schema
 class FileMetadata(BaseModel):
-    user_id: str  # Owner of the file
     file_name: str
     file_type: str
     file_size: int
     storage_path: Optional[str] = None  # Where the file is stored
+    extracted_text: str
+
+class QueryRequest(BaseModel):
+    file_name: Optional[str] = None
+    query: str
+
