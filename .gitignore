@@ -179,3 +179,12 @@ cython_debug/
 *.pyd
 .vscode/
 
+__pycache__/
+*.pyc
+.env
+*.pkl
+*.log
+temp_files/
+uploaded_files/
+
+

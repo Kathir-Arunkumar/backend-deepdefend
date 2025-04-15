@@ -1,5 +1,4 @@
 import hashlib
-import os
 from fastapi import APIRouter, HTTPException
 from models import UserSignup, UserLogin
 from database import users_collection
@@ -20,6 +19,7 @@ async def signup(user: UserSignup):
     if user.password != user.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
+    # Hash the password before storing
     hashed_pw = hash_password(user.password)
 
     user_data = {
