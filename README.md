@@ -9,8 +9,9 @@ It connects to **MongoDB Atlas** and provides RESTful APIs for **user signup, lo
 ✔ **User Authentication** (Signup & Login)  
 ✔ **Secure Password Hashing** (bcrypt)  
 ✔ **MongoDB Atlas Integration**  
-✔ **File Upload & Metadata Storage**  
-✔ **Swagger API Documentation**  
+✔ **File Upload & Malware detection before uploading**  
+✔ **chatbot feature to chat with documents**
+✔ **content based pdf searching instead of name of the pdf** 
 
 ---
 
